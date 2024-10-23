@@ -51,13 +51,14 @@ class Europa():
         else:
             return None
 
-    def get_photo_urls(self):
-        total = self.get_total_number()
+    def get_photo_urls(self, total=0):
+        if not total:
+            total = self.get_total_number()
         url = self.get_url(True)
         interim = self.send_request(url)
         if total and interim:
             url_list = []
-            for _ in range(0, (total // 100)+1):
+            for _ in range(0, (total // 100)):
                 response = requests.get(url)
                 interim = response.json()
                 
@@ -80,40 +81,3 @@ class Europa():
                 time.sleep(0.2)
             return url_list
 
-    def download_images(self, urls, download="images"):
-        """Downloads images from a list of URLs.
-    
-        Args:
-            urls: A list of urls containing a single image each.
-            download: The directory to save the images. (Defaults to images)
-        """
-    
-        os.makedirs(download, exist_ok=True)
-        total = 0
-        
-        for url in urls:
-            time.sleep(0.2)
-            #only take the pages which expose jpgs 
-            if url.lower().endswith(".jpg"):
-                try:
-                    #get requests and bad status exception
-                    response = requests.get(url, stream=True)
-                    response.raise_for_status()
-                    #parse the url and get default file names 
-                    parsed_url = urlparse(url)
-                    #keep the original filename as on the server
-                    filename = os.path.basename(parsed_url.path)
-                    filepath = os.path.join(download, filename)
-        
-                    with open(filepath, 'wb') as f:
-                        for chunk in response.iter_content(chunk_size=8192):
-                            f.write(chunk)
-                    
-                    print(f"Downloaded: {url} to {filepath}")
-                    total+=1
-                    time.sleep(0.1)
-        
-                except requests.exceptions.RequestException as e:
-                    print(f"Error downloading {url}: {e}")
-    
-        print(f"Total images: {total}")
