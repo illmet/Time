@@ -14,7 +14,7 @@ class Europa():
         """
         base = "https://api.europeana.eu/record/v2/search.json"
 
-        self.url = f"{base}?{query}&theme=photography&wskey={str(os.environ.get("europa"))}&rows=100&media=true"
+        self.url = f"{base}?{query}&theme=photography&wskey={str(os.environ.get("europa"))}&rows=100&media=true&reusability=open"
 
     def get_url(self, cursor):
         """
@@ -54,16 +54,19 @@ class Europa():
     def get_photo_urls(self, total=0):
         if not total:
             total = self.get_total_number()
+        total = total // 100
         url = self.get_url(True)
         interim = self.send_request(url)
-        if total and interim:
-            url_list = []
-            for _ in range(0, (total // 100)):
+        if interim:
+            yearly_list = []
+            for _ in range(0, total):
+                yearly_urls = []
                 response = requests.get(url)
                 interim = response.json()
+                time.sleep(0.3)
                 
                 for item in interim['items']:
-                    url_list.append(item['edmIsShownBy'][0])
+                    yearly_list.append(item['edmIsShownBy'][0])
     
                 #get the cursor values
                 new_cursor = interim['nextCursor']
@@ -79,5 +82,5 @@ class Europa():
                                    parsed_url.params, encoded_query_string, parsed_url.fragment)
                 url = urlunparse(updated_url_tuple)
                 time.sleep(0.2)
-            return url_list
+            return yearly_list
 
