@@ -5,6 +5,8 @@ Currently, this project would allow you to download images like below in a syste
 
 All downloaded images are free of copyright.
 
+![Image](samples/houses_2012.jpg)
+
 ![Image](samples/room_1924.jpg)
 
 ![Image](samples/aerial_1950.jpg)
@@ -12,5 +14,7 @@ All downloaded images are free of copyright.
 ![Image](samples/builders_1984.jpg)
 
 ![Image](samples/postcard_1984.jpg)
+
+![Image](samples/office_2012.jpg)
 
 ![Image](samples/catalogue_1997.jpg)
